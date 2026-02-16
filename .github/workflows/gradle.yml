@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [11]
+        java: [8]
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     env:
@@ -27,43 +27,40 @@ jobs:
           distribution: 'zulu'
           cache: 'gradle'
           java-package: 'jdk+fx'
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: ${{ env.gradle_version }}
       - name: Run commands
-        run: gradle ${{ env.gradle_commands }}
+        run: gradle build
       - name: Prepare PATH
         if: startsWith(matrix.os, 'windows')
         shell: bash
         run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
       - name: Re-install innosetup
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         shell: cmd
         run: |
           choco uninstall innosetup
           choco install innosetup --version=5.6.1
       - name: Build insight exe
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         shell: cmd
         run: |
-          gradle packageApplicationExe  --stacktrace
+          ./gradlew.bat packageApplicationExe  --stacktrace
       - name: Build importer exe
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         shell: cmd
         run: |
-          gradle packageImporterApplicationExe  --stacktrace
+          ./gradlew.bat packageImporterApplicationExe  --stacktrace
       - name: Build insight msi
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         shell: cmd
         run: |
-          gradle packageApplicationMsi  --stacktrace
+          ./gradlew.bat packageApplicationMsi  --stacktrace
       - name: Build importer msi
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         shell: cmd
         run: |
-          gradle packageImporterApplicationMsi --stacktrace
+          ./gradlew.bat packageImporterApplicationMsi --stacktrace
       - name: Check MSI
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         run: |
           msi=(`find build/packaged/installImporterDist/bundles -maxdepth 1 -name "*.msi"`)
           if [ ${#msi[@]} == 0 ]; then
@@ -75,28 +72,28 @@ jobs:
           fi
         shell: bash
       - name: Upload zip and jar
-        if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.java, '8')
         uses: actions/upload-artifact@v4
         with:
             name: artifacts-${{ matrix.os }}-OMERO
             path: build/distributions/OMERO*
             if-no-files-found: error
       - name: Upload jar
-        if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.java, '8')
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.os }}-omero_
           path: build/libs/omero_*
           if-no-files-found: error
       - name: Upload insight artifacts
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.os }}-insight
           path: build/packaged/main/bundles/*
           if-no-files-found: error
       - name: Upload importer artifacts
-        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
+        if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '8')
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.os }}-importer
