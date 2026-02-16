@@ -27,8 +27,11 @@ jobs:
           distribution: 'zulu'
           cache: 'gradle'
           java-package: 'jdk+fx'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ env.gradle_version }}
       - name: Run commands
-        run: gradle build
+        run: gradle ${{ env.gradle_commands }}
       - name: Prepare PATH
         if: startsWith(matrix.os, 'windows')
         shell: bash
