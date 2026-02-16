@@ -46,22 +46,22 @@ jobs:
         if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
         shell: cmd
         run: |
-          gradle packageApplicationExe
+          gradle packageApplicationExe  --stacktrace
       - name: Build importer exe
         if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
         shell: cmd
         run: |
-          gradle packageImporterApplicationExe
+          gradle packageImporterApplicationExe  --stacktrace
       - name: Build insight msi
         if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
         shell: cmd
         run: |
-          gradle packageApplicationMsi
+          gradle packageApplicationMsi  --stacktrace
       - name: Build importer msi
         if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
         shell: cmd
         run: |
-          gradle packageImporterApplicationMsi
+          gradle packageImporterApplicationMsi --stacktrace
       - name: Check MSI
         if: startsWith(matrix.os, 'windows') && startsWith(matrix.java, '11')
         run: |
